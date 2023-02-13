@@ -25,7 +25,9 @@ export const DocsPagination = ({ routes }: DocsPaginationProps) => {
       justifyContent="space-between"
       aria-label="Pagination navigation"
     >
-      {previous && <PaginationLink route={previous} direction="Previous" />}
+      <div>
+        {previous && <PaginationLink route={previous} direction="Previous" />}
+      </div>
       {next && (
         <Box sx={{ textAlign: 'right' }}>
           <PaginationLink route={next} direction="Next" />
