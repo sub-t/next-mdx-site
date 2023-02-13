@@ -78,7 +78,7 @@ export const HomePage = ({
           <Typography css={paragraphStyles}>
             このサイトテンプレートの使い方や拡張方法はこちらからご覧になれます。
             <br />
-            チュートリアル形式の解説も掲載する予定です。
+            チュートリアル形式の解説も掲載しております。
           </Typography>
           <LinkButton href="/docs/tutorial/getting-started">
             Get Started
