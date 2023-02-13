@@ -2,33 +2,37 @@ import { DefaultPage } from '@/components/default';
 import { PostCard } from '@/components/PostCard';
 import { getAllFrontmatters } from '@/lib/mdx';
 import { FrontmatterWithPath } from '@/types/fromtmatter';
-import { Stack } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { NextParsedUrlQuery } from 'next/dist/server/request-meta';
 
 type Props = {
   frontmatters: FrontmatterWithPath[];
+  tag: string;
 };
 
-export default function Page({ frontmatters }: Props) {
+export default function Page({ frontmatters, tag }: Props) {
   return (
     <DefaultPage>
-      <Stack spacing={4}>
-        {frontmatters.map((frontmatter) => {
-          const { title, description, author, image, date, path } = frontmatter;
+      <Stack spacing={6}>
+        <Typography variant="h1">Tag : {tag}</Typography>
+        <Stack spacing={4}>
+          {frontmatters.map((frontmatter) => {
+            const { title, description, author, image, date, path } = frontmatter;
 
-          return (
-            <PostCard
-              key={description}
-              title={title}
-              description={description}
-              author={author}
-              date={date}
-              image={image}
-              href={path}
-            />
-          );
-        })}
+            return (
+              <PostCard
+                key={description}
+                title={title}
+                description={description}
+                author={author}
+                date={date}
+                image={image}
+                href={path}
+              />
+            );
+          })}
+      </Stack>
       </Stack>
     </DefaultPage>
   );
@@ -65,6 +69,7 @@ export const getStaticProps: GetStaticProps<Props, Params> = async ({
   return {
     props: {
       frontmatters,
+      tag: slug,
     },
   };
 };

@@ -9,8 +9,8 @@ type Props = WithClassName & {
 
 export const PostTag = ({ href, label, className }: Props) => {
   return (
-    <Link href={href} className={className}>
-      <Chip label={label} sx={{ cursor: 'pointer' }} />
+    <Link href={href}>
+      <Chip label={label} sx={{ cursor: 'pointer' }} className={className} />
     </Link>
   );
 };

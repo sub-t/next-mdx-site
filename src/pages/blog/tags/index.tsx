@@ -1,6 +1,8 @@
 import { DefaultPage } from '@/components/default';
 import { PostTag } from '@/components/PostTag';
 import { getAllFrontmatters } from '@/lib/mdx';
+import { Typography } from '@mui/material';
+import { Stack } from '@mui/system';
 import { GetStaticProps } from 'next';
 
 type Props = {
@@ -10,9 +12,14 @@ type Props = {
 export default function Page({ tags }: Props) {
   return (
     <DefaultPage>
-      {tags.map((tag) => (
-        <PostTag key={tag} href={`/blog/tags/${tag}`} label={tag} />
-      ))}
+      <Stack spacing={6}>
+        <Typography variant="h1">Tags</Typography>
+        <Stack direction="row" flexWrap="wrap" spacing={2}>
+          {tags.map((tag) => (
+            <PostTag key={tag} href={`/blog/tags/${tag}`} label={tag} />
+          ))}
+        </Stack>
+      </Stack>
     </DefaultPage>
   );
 }
