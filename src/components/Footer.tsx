@@ -44,7 +44,7 @@ export const Footer = () => {
               </Link>
             </Stack>
           </Stack>
-          <Typography component="small" sx={{ fontSize: 14 }}>
+          <Typography component="small" fontSize={14}>
             Copyright &copy; {new Date().getFullYear()} {SITE_NAME}
           </Typography>
         </Stack>

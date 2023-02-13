@@ -30,11 +30,9 @@ export const Accordion = ({ summary, children, ...props }: Props) => {
         id={`${summary}-header`}
       >
         <Typography
-          sx={{
-            fontSize: '0.85rem',
-            fontWeight: 500,
-            color: theme.palette.grey[800],
-          }}
+          fontSize="0.85rem"
+          fontWeight={500}
+          color={theme.palette.grey[800]}
         >
           {summary}
         </Typography>

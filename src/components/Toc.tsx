@@ -49,12 +49,7 @@ export const Toc = () => {
                   },
                 }}
               >
-                <Typography
-                  sx={{
-                    fontSize: '0.9rem',
-                    color: theme.palette.grey[800],
-                  }}
-                >
+                <Typography fontSize="0.9rem" color={theme.palette.grey[800]}>
                   {text}
                 </Typography>
               </a>

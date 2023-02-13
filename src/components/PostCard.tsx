@@ -54,7 +54,7 @@ export const PostCard = ({
                   <Typography gutterBottom variant="h3" component="div">
                     {title}
                   </Typography>
-                  <Typography color={theme.palette.grey[700]} fontSize="0.8rem">
+                  <Typography fontSize="0.8rem" color={theme.palette.grey[700]}>
                     {description}
                   </Typography>
                 </div>
