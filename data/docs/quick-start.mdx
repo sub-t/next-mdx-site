@@ -1,0 +1,41 @@
+# クイックスタート
+
+ここでは、リポジトリのクローンから最初のブログ投稿までの解説を行います。
+
+## プロジェクトの導入・初期化
+
+以下のコマンドを打ち込んで、リポジトリのクローンからプロジェクトの初期化を行います。
+`project-name`の部分はお好きな名前に置き換えてください。
+
+```bash
+git clone https://github.com/sub-t/next-mdx-site project-name
+cd project-name
+yarn
+```
+
+また、ルートディレクトリの`.env.local.example`を`.env.local`に変更してください。
+
+`yarn dev`で開発環境が立てば、プロジェクトの初期化完了です。
+
+## ブログポストの投稿
+
+ブログポストの管理は`data/blog/posts`フォルダ以下で管理しています。ここに新たな MDX ファイルを追加してみましょう。
+
+```mdx:data/blog/posts/first-post.mdx
+---
+title: 'First Blog Post'
+date: '2023-1-1'
+author: You
+tags:
+  - 'blog'
+---
+
+初投稿
+
+```
+
+開発環境を立ち上げた状態で、
+http://localhost:3000/blog/posts/first-post
+にアクセスしてみましょう。
+
+「First Blog Post」のタイトルが見えたら、最初のブログ投稿完了です。

@@ -1,0 +1,323 @@
+# 各種設定
+
+各種設定の案内です。
+サイトの見た目や振る舞いを変更する際に参考にしてください。
+
+## 環境変数
+
+環境変数は`.env`ファイルにより設定しています。
+
+環境変数は次の 2 つです。
+
+- `NEXT_PUBLIC_ROOT_URL`：サイトのルート URL
+- `NEXT_PUBLIC_BASE_PATH`：`next.config.mjs`の`basePath`に対応するパス
+
+本番環境で運用する際は、適宜変更を加えてください。
+
+また、デプロイ先を GitHub Pages にする場合は
+[こちら](/docs/guides/deployment/)
+を参照してください。
+
+## `config/app`
+
+### `ROOT_URL`
+
+`NEXT_PUBLIC_ROOT_URL`そのものです。
+使用箇所は[`lib/url.ts`](#url)に限られます。
+
+### `SITE_NAME`
+
+サイト名です。ヘッダー・フッターの表記と
+[タイトル・メタデータ](#タイトルメタデータseo)
+の設定に利用しています。
+
+### `SITE_DESCRIPTION`
+
+[メタデータ](#タイトルメタデータseo)
+のデフォルトの`description`です。
+
+## タイトル・メタデータ(`Seo`)
+
+`components/Seo.tsx`でタイトルやメタデータの設定を行っています。
+
+## Front Matter
+
+```mdx:data/blog/posts/example.mdx
+---
+title: 'Example Blog Post'
+description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilities morbi tempus.'
+image: '/blog/posts/nextjs.png'
+date: '2023-1-1'
+author: John Doe
+tags:
+  - 'site'
+  - 'blog'
+---
+```
+
+ページ固有の変数を定義したいときに使用してください。
+
+ここでお伝えしたいことは 1 点、
+`image: '/blog/posts/nextjs.png'`に関してです。
+後述する[`getImageUrl`](#getimageurl)を使用して
+`public`フォルダの画像にアクセスするため、`public/assets/...`
+に続く`/blog/posts/nextjs.png`というパスを指定している
+ことに注意してください。
+
+## 静的ファイルの格納
+
+`public/assets`フォルダ以下に格納しています。
+格納するフォルダを変更する際は、
+[`getImageUrl`](#getimageurl)
+の振る舞いを変更してください。
+
+## `data`フォルダ
+
+MDX ファイルの格納先です。データを格納している`data`配下のフォルダと
+対応するデータを表示する`pages`配下のフォルダ構成は一致しています。
+このプロジェクトでは
+
+- `data/blog/posts/xxx.mdx`と`pages/blog/posts/[...slug].tsx`
+- `data/docs/xxx/xxx.mdx`と`pages/docs/[...slug].tsx`
+
+が対応しています。管理と実装が容易であるため、このフォルダ構成を採用しています。
+実装はこの前提の下に成り立っているので、注意してください。詳しくは
+[`mdx`](#mdx)をご覧ください。
+
+## `lib`フォルダ
+
+ほとんどのロジックは`lib`フォルダに格納されています。
+
+### `routes`
+
+`globalRoutes`と`docsRoutes`が格納されています。それぞれ
+
+- `globalRoutes`：サイト全体の案内
+- `docsRoutes`：ドキュメント内のリンク
+
+を表しています。
+
+### `url`
+
+```ts:lib/url.ts
+import { ROOT_URL } from '@/config/app';
+
+export const resolveUrl = (...paths: string[]) => {
+  const rootUrl = ROOT_URL.endsWith('/') ? ROOT_URL : ROOT_URL + '/';
+  return (
+    rootUrl +
+    paths
+      .flatMap((path) => path.split('/'))
+      .filter(Boolean)
+      .join('/')
+  );
+};
+
+export const getImageUrl = (image: string | undefined) =>
+  resolveUrl('assets', image ?? 'default.png');
+```
+
+#### `resolveUrl`
+
+クライアント側で動作する`path.resolve`に類する機能が欲しかったので追加しました。
+使用範囲が限られているので、実装は簡易的なものであることに注意してください。
+
+#### `getImageUrl`
+
+`public/assets`配下に格納された画像ファイルへのリンクを
+生成するために使用しています。
+画像ファイルの格納先を変更する場合は、適宜
+`resolveUrl`に渡す第 1 変数を変更してください。
+
+### `path`
+
+```ts:lib/path.ts
+import path from 'path';
+
+export const resolvePath = (...paths: string[]) =>
+  path.resolve(...paths).replaceAll('\\', '/');
+
+const ROOT_PATH = resolvePath(process.cwd());
+export const DATA_PATH = resolvePath(ROOT_PATH, 'data');
+```
+
+`DATA_PATH`は`data`フォルダの絶対パスです。
+
+`resolvePath`は`path.resolve`のラッパー関数です。
+OS が Windows である場合、`path.resolve`が`\`で
+パスを結合してしまうので、`\`を`/`に変換しています。
+`glob`が`\`で結合されたパスを受け付けないので、このような変換を加えています。
+
+### `mdx`
+
+```ts:lib/mdx.ts
+import { MdxSource } from '@/types/mdx';
+import fs from 'fs';
+import glob from 'glob';
+import matter from 'gray-matter';
+import { serialize } from 'next-mdx-remote/serialize';
+import rehypeSlug from 'rehype-slug';
+import remarkGfm from 'remark-gfm';
+import { Frontmatter, FrontmatterWithPath } from '../types/fromtmatter';
+import { DATA_PATH, resolvePath } from './path';
+
+const getFilePath = (basePath: string, slug: string[]) =>
+  resolvePath(DATA_PATH, basePath, ...slug) + '.mdx';
+
+export const getMdxBySlug = async (basePath: string, slug: string[]) => {
+  const filePath = getFilePath(basePath, slug);
+  const source = fs.readFileSync(filePath, 'utf8');
+  const { data, content } = matter(source);
+  const mdxSource = await serialize(content, {
+    mdxOptions: {
+      remarkPlugins: [remarkGfm],
+      rehypePlugins: [rehypeSlug],
+    },
+    scope: data,
+  });
+  return mdxSource as MdxSource;
+};
+
+export const getAllFrontmatters = (basePath: string) => {
+  const PATH = resolvePath(DATA_PATH, basePath);
+  const paths = glob.sync(`${PATH}/**/*.mdx`);
+
+  return paths
+    .map((filePath) => {
+      const source = fs.readFileSync(resolvePath(filePath), 'utf8');
+      const { data } = matter(source);
+
+      return {
+        ...(data as Frontmatter),
+        path: filePath.replace(`${DATA_PATH}`, '').replace('.mdx', ''),
+      } as FrontmatterWithPath;
+    })
+    .sort((a, b) => Number(new Date(b.date)) - Number(new Date(a.date)));
+};
+
+export const getAllPaths = (basePath: string) => {
+  const frontmatters = getAllFrontmatters(basePath);
+
+  return frontmatters.map((frontmatter) => ({
+    params: {
+      slug: frontmatter.path.replace(`/${basePath}/`, '').split('/'),
+    },
+  }));
+};
+```
+
+実装の詳細には立ち入りません。
+
+#### 各関数の振る舞い
+
+- `getMdxBySlug`：指定された MDX ファイルを`MdxSource`に変換する
+- `getAllFrontmatters`：対象フォルダ内のデータ全てを検索し、その Front Matter + `path`をリストにして返す
+- `getAllPaths`：対象フォルダ内のデータに対応するパスを`getStaticPaths`の形式に沿って生成する
+
+`MdxSource`は
+[next-mdx-remote](https://github.com/hashicorp/next-mdx-remote)
+の`MDXRemote`に渡すデータです。
+
+また`path`は、データに対応するページの絶対パスを格納した変数になります。
+`data/blog/posts/xxx.mdx`は`ROOT_URL/blog/posts/xxx.tsx`に表示されますが、
+このとき、`path`には`/blog/posts/xxx.tsx`が格納されています。
+`path`は本来`pages`以下のフォルダ構造(=ルート構造)をもとに生成されるべきですが、
+このプロジェクトでは`pages`以下のフォルダ構造に対応した`data`フォルダから生成しています。
+`getAllFrontmatters`の使用する際の`path`の生成が容易であるためこうした実装を採用しましたが、
+`data`フォルダの構造が`pages`フォルダの構造と一致していないと正しい`path`が生成できず、
+ページ内リンクの挙動が意図したものにならないといったバグを生むことになる点に注意してください。
+
+#### 実装パターン 1
+
+```tsx:pages/blog/posts/[...slug].tsx
+...
+type Props = {
+  mdxSource: MdxSource;
+};
+...
+export default function Page({ mdxSource }: Props) {
+  ...
+  return (
+    ...
+        <MDXRemote {...mdxSource} components={components} />
+    ...
+  );
+}
+
+const BASE_PATH = 'blog/posts';
+
+type Params = NextParsedUrlQuery & {
+  slug: string[];
+};
+
+export const getStaticPaths: GetStaticPaths<Params> = async () => {
+  return {
+    paths: getAllPaths(BASE_PATH),
+    fallback: false,
+  };
+};
+
+export const getStaticProps: GetStaticProps<Props, Params> = async ({
+  params,
+}) => {
+  const slug = params!.slug;
+  const mdxSource = await getMdxBySlug(BASE_PATH, slug);
+
+  return {
+    props: {
+      mdxSource,
+    },
+  };
+};
+```
+
+#### 実装パターン 2
+
+```tsx:pages/blog/tag/index.tsx
+...
+type Props = {
+  tags: string[];
+};
+
+export default function Page({ tags }: Props) {
+  return (
+    <DefaultPage>
+      {tags.map((tag) => (
+        <PostTag key={tag} href={`/blog/tags/${tag}`} label={tag} />
+      ))}
+    </DefaultPage>
+  );
+}
+
+const BASE_PATH = 'blog/posts';
+
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const frontmatters = getAllFrontmatters(BASE_PATH);
+  const tags = Array.from(
+    new Set(frontmatters.flatMap((frontmatter) => frontmatter.tags)),
+  );
+
+  return {
+    props: {
+      tags,
+    },
+  };
+};
+```
+
+## MDX で使用するコンポーネント
+
+MDX で使用するコンポーネントは
+`components/mdx/index.tsx`
+から一括でエクスポートしています。
+
+コンポーネントの登録の仕方は
+[Using MDX with Next.js](https://nextjs.org/docs/advanced-features/using-mdx)
+や
+[next-mdx-remote のドキュメント](https://github.com/hashicorp/next-mdx-remote)
+を参照してください。
+
+## MDX を直接使用する。
+
+[Using MDX with Next.js](https://nextjs.org/docs/advanced-features/using-mdx)
+の設定を行っているので、直接 MDX ファイルを`pages`配下に置くことも可能です。

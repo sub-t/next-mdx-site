@@ -1,0 +1,37 @@
+# デプロイ
+
+デプロイの解説を行います。デプロイ先はこのサイトと同じ
+GitHub Pages です。
+
+## 環境変数の変更
+
+環境変数を変更します。`you`は github アカウント名、
+`your-remote-repogitory`は対応するリモートリポジトリの名前です。
+
+```diff
+- NEXT_PUBLIC_ROOT_URL=https://sub-t.github.io/next-mdx-site/
++ NEXT_PUBLIC_ROOT_URL=https://you.github.io/your-remote-repogitory/
+NEXT_PUBLIC_BASE_PATH=/test
+```
+
+## 個人アクセストークンの取得
+
+[こちら](https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+を参照してください。
+
+## ワークフローの設定
+
+[こちら](https://stackoverflow.com/questions/72851548/permission-denied-to-github-actionsbot)
+を参照してください。
+
+## リモートリポジトリへのプッシュ
+
+リモートリポジトリに Git の変更をプッシュするとデプロイが開始されます。
+しかし、これだけではデプロイは完了しません。
+
+## 公開するブランチの指定
+
+[こちら](https://docs.github.com/ja/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)
+を参照してください。
+
+ここでは、変更先のブランチが「gh-pages」となります。

@@ -1,0 +1,110 @@
+# サイトのページに反映させる
+
+ここでは、[スニペットを登録する](/next-mdx-site/docs/tutorial/getting-started/)
+にて登録したスニペットをサイトに掲載したいと思います。
+
+## `pages`フォルダに`snippets`フォルダを追加する
+
+このプロジェクトでは、サイトの各ページを
+`src/pages`フォルダ配下で管理しています。
+`src/pages/snippets`フォルダを作成しましょう。
+
+## `[...slug].tsx`で動的なルーティングを行う
+
+`[...slug].tsx`を作成して
+[動的なルーティング](https://nextjs-ja-translation-docs.vercel.app/docs/routing/dynamic-routes)
+を行います。
+
+## 実装
+
+いよいよ実装ですが、細かい解説は行いません。
+
+```tsx:src/pages/snippets/[...slug].tsx
+import { DefaultPage } from '@/components/default';
+import { components } from '@/components/mdx';
+import { getAllPaths, getMdxBySlug } from '@/lib/mdx';
+import { MdxSource } from '@/types/mdx';
+import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next';
+import { MDXRemote } from 'next-mdx-remote';
+import { NextParsedUrlQuery } from 'next/dist/server/request-meta';
+
+type Props = {
+  mdxSource: MdxSource;
+};
+
+export default function Page({ mdxSource }: Props) {
+  return (
+    <DefaultPage>
+      <MDXRemote {...mdxSource} components={components} />
+    </DefaultPage>
+  );
+}
+
+const BASE_PATH = 'snippets';
+
+type Params = NextParsedUrlQuery & {
+  slug: string[];
+};
+
+export const getStaticPaths: GetStaticPaths<Params> = async () => {
+  return {
+    paths: getAllPaths(BASE_PATH),
+    fallback: false,
+  };
+};
+
+export const getStaticProps: GetStaticProps<Props, Params> = async ({
+  params,
+}: GetStaticPropsContext) => {
+  const slug = params?.slug as string[];
+  const mdxSource = await getMdxBySlug(BASE_PATH, slug);
+
+  return {
+    props: {
+      mdxSource,
+    },
+  };
+};
+```
+
+実はこのコード、`src/pages/docs/[...slug].tsx`
+の実装とほとんど変わりありません。
+
+変更箇所は 2 点
+
+```diff
+- import { DocsPage } from '@/components/docs';
++ import { DefaultPage } from '@/components/default';
+
+...
+-    <DocsPage>
++    <DefaultPage>
+      <MDXRemote {...mdxSource} components={components} />
+-    </DocsPage>
++    </DefaultPage>
+
+...
+```
+
+と
+
+```diff
+- const BASE_PATH = 'docs';
++ const BASE_PATH = 'snippets';
+```
+
+のみです。
+
+ページの見た目を変更するために`DefaultPage`を選択し、
+データの取得先を変更するために`snippets`に変更しました。
+
+## まとめ
+
+ここでは、MDX ファイルを作成するだけで
+簡単にサイトの構築から拡張まで行えることが確認できました。
+
+次に行うことは、スニペットの一覧ページの作成です。
+
+また、今回触れた`MDXRemote`の設定方法は
+[こちら](/docs/guides/settings/)
+を参照してください。

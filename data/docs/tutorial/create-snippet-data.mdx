@@ -1,0 +1,35 @@
+# スニペットを登録する
+
+早速ページの実装、と行きたいところですが、
+先にスニペットのデータの登録を行いたいと思います。
+
+## `data`フォルダに`snippets`フォルダを追加する
+
+このプロジェクトのデータ(MDX ファイル)の保管先は`data`フォルダです。
+`data`フォルダ直下には`blog`・`docs`フォルダがありますが、ここに`snippets`フォルダを追加します。
+
+## `snippets`フォルダに MDX ファイルを追加する
+
+`snippets`フォルダを作成したら、適当なスニペットが書かれた
+MDX ファイルを追加してみましょう。
+次の`component.mdx`ファイルを`snippets`配下に作成してください。
+
+````md:data/snippets/component.mdx
+# React Component
+
+```tsx
+type Props = {};
+
+export const Component = (props: Props) => {
+    return <></>;
+};
+```
+````
+
+## まとめ
+
+ここでは、`data`フォルダに`snippets`フォルダを追加し、
+最初のスニペット`component.mdx`を登録しました。
+
+次に行うことは、今回作成した`component.mdx`を
+サイトのページに反映させることです。
