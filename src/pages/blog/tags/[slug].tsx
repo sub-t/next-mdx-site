@@ -18,7 +18,8 @@ export default function Page({ frontmatters, tag }: Props) {
         <Typography variant="h1">Tag : {tag}</Typography>
         <Stack spacing={4}>
           {frontmatters.map((frontmatter) => {
-            const { title, description, author, image, date, path } = frontmatter;
+            const { title, description, author, image, date, path } =
+              frontmatter;
 
             return (
               <PostCard
@@ -32,7 +33,7 @@ export default function Page({ frontmatters, tag }: Props) {
               />
             );
           })}
-      </Stack>
+        </Stack>
       </Stack>
     </DefaultPage>
   );
