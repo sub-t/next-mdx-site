@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import NextLink from 'next/link';
 
-type Props = Omit<React.ComponentPropsWithoutRef<typeof NextLink>, 'href'> & {
+type Props = Omit<React.ComponentProps<typeof NextLink>, 'href'> & {
   href: string;
 };
 

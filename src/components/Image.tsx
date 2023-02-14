@@ -1,6 +1,6 @@
 import { getImageUrl } from '@/lib/url';
 
-type Props = JSX.IntrinsicElements['img'];
+type Props = React.ComponentProps<'img'>;
 
 export const Image = ({ alt, src, ...props }: Props) => {
   const imageUrl = getImageUrl(src);

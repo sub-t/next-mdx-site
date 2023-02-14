@@ -12,7 +12,7 @@ type Props = CommonProps & {
   summary: string;
 };
 
-export const Accordion = ({ summary, children, ...props }: Props) => {
+export const Accordion = ({ summary, children, className }: Props) => {
   return (
     <AccordionRoot
       disableGutters
@@ -22,7 +22,7 @@ export const Accordion = ({ summary, children, ...props }: Props) => {
         borderRadius: 8,
         backgroundColor: theme.palette.grey[100],
       }}
-      {...props}
+      className={className}
     >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
