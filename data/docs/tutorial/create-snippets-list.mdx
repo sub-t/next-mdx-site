@@ -1,0 +1,108 @@
+# 一覧ページを設ける
+
+ここでは、登録したスニペットの一覧が閲覧できるページを作ります。
+
+## `snippets`フォルダに新たなスニペットを追加する
+
+手始めに、
+[スニペットを登録する](/next-mdx-site/docs/tutorial/getting-started/)
+と同じ要領でスニペットを追加しておきます。
+
+````md:data/snippets/useToggle.mdx
+# UseToggle Hook
+
+```tsx
+import { useCallback, useState } from 'react';
+
+export const useToggle = (initial = false) => {
+  const [state, setState] = useState(initial);
+
+  const toggle = useCallback(() => {
+    setState((b) => !b);
+  }, []);
+
+  return [state, toggle];
+};
+```
+````
+
+## タイトルの指定を Front Matter で行う
+
+新しいスニペットを追加して早々、変更を加えるのは些か気が引けるものですが、
+一覧ページを設けるにあたって修正を加えます。
+
+先ほど作成した MDX ファイルの先頭にタイトルを表す Front Matter を追加します。
+
+```diff:data/snippets/useToggle.mdx
++ ---
++ title: 'UseToggle Hook'
++ ---
+```
+
+同様に、
+[スニペットを登録する](/next-mdx-site/docs/tutorial/getting-started/)
+で作成した`component.mdx`にも修正を加えます。
+
+```diff:data/snippets/compoennt.mdx
++ ---
++ title: 'React Component'
++ ---
+```
+
+これで一覧ページを作成する下準備が整いました。
+
+## スニペットの一覧を設ける
+
+では、早速スニペットの一覧ページを設けましょう。
+場所は`pages/snippets/index.tsx`にします。
+
+実装は`pages/blog/tags/index.tsx`とほとんど変わりません。
+先ほど追加した Front Matter から`title`を抽出していることに注目してください。
+また、`PostTag`を流用している点については気にしないでください。
+
+```tsx:pages/snippets/index.tsx
+import { DefaultPage } from '@/components/default';
+import { PostTag } from '@/components/PostTag';
+import { getAllFrontmatters } from '@/lib/mdx';
+import { Typography } from '@mui/material';
+import { Stack } from '@mui/system';
+import { GetStaticProps } from 'next';
+
+type Props = {
+  titles: string[];
+};
+
+export default function Page({ titles }: Props) {
+  return (
+    <DefaultPage>
+      <Stack spacing={6}>
+        <Typography variant="h1">Snippets</Typography>
+        <Stack direction="row" flexWrap="wrap" spacing={2}>
+          {titles.map((title) => (
+            <PostTag key={title} href={`/snippets/${title}`} label={title} />
+          ))}
+        </Stack>
+      </Stack>
+    </DefaultPage>
+  );
+}
+
+const BASE_PATH = 'snippets';
+
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const frontmatters = getAllFrontmatters(BASE_PATH);
+  const titles = frontmatters.map((frontmatter) => frontmatter.title);
+
+  return {
+    props: {
+      titles,
+    },
+  };
+};
+```
+
+## まとめ
+
+ここでは、スニペットの一覧ページを作成しました。
+また、MDX ファイルに Front Matter を追加し、
+`pages`以下で抽出、表示を行いました。
