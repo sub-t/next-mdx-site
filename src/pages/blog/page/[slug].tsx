@@ -36,7 +36,7 @@ export default function Page({ frontmatters, pagesCount, tags }: Props) {
       router.prefetch(`/blog/page/${nextPage}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [router.asPath]);
 
   return (
     <DefaultPage>
