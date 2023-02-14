@@ -16,7 +16,6 @@ export const ScrollArea = ({ children }: Props) => (
   <Root css={{ overflow: 'hidden', width: '100%', height: '100%' }}>
     <Viewport css={{ width: '100%', height: '100%' }}>{children}</Viewport>
     <Scrollbar
-      className="flex select-none touch-none p-0.5 bg-blackA6 transition-colors duration-[160ms] ease-out hover:bg-blackA8 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col data-[orientation=horizontal]:h-2.5"
       css={{
         userSelect: 'none',
         touchAction: 'none',
