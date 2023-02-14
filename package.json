@@ -9,7 +9,7 @@
     "lint": "eslint src --ext .tsx,.ts",
     "fix": "yarn lint --fix && yarn format",
     "typecheck": "tsc",
-    "prettier": "prettier --config .prettierrc.json \"./**/*.{js,jsx,ts,tsx,json,md}\"",
+    "prettier": "prettier --config .prettierrc.json \"./**/*.{js,jsx,ts,tsx,json,md,mdx}\"",
     "format": "yarn prettier --write",
     "prepare": "husky install"
   },
