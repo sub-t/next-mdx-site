@@ -39,6 +39,7 @@ export const Seo = ({
           },
         ],
       }}
+      additionalLinkTags={[{ rel: 'icon', href: resolveUrl('favicon.ico') }]}
     />
   );
 };
