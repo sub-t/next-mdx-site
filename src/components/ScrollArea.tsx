@@ -8,7 +8,7 @@ import {
   Viewport,
 } from '@radix-ui/react-scroll-area';
 
-const SCROLLBAR_SIZE = 6;
+const SCROLLBAR_SIZE = 4;
 
 type Props = WithChildren;
 
