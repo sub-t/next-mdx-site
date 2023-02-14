@@ -16,7 +16,7 @@ export const DocsPage = ({ children, title, description, image }: Props) => {
     <>
       <Seo title={title} description={description} image={image} />
       <Grid container spacing={16}>
-        <Grid component="main" item xs={12} lg={9}>
+        <Grid component="main" item xs={12} lg={8}>
           <Stack spacing={16} sx={{ py: 8 }}>
             <Box sx={{ display: { xs: 'block', lg: 'none' }, my: 4 }}>
               <Accordion summary="目次">
@@ -29,14 +29,14 @@ export const DocsPage = ({ children, title, description, image }: Props) => {
                 </Box>
               </Accordion>
             </Box>
-            <div>{children}</div>
+            <article>{children}</article>
             <DocsPagination routes={allDocsRoutes} />
           </Stack>
         </Grid>
         <Grid
           component="aside"
           item
-          lg={3}
+          lg={4}
           sx={{ display: { xs: 'none', lg: 'block' } }}
         >
           <Box
