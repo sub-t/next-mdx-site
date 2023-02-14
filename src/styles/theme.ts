@@ -4,7 +4,7 @@ export const theme = createTheme({
   typography: {
     fontFamily: 'system-ui',
     h1: {
-      lineHeight: '1rem',
+      lineHeight: '3rem',
       fontSize: '3rem',
       fontWeight: 700,
     },
