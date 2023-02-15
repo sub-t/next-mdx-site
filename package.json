@@ -60,6 +60,6 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": "yarn lint --fix",
-    "*.{js,jsx,ts,tsx,json,md}": "yarn format"
+    "*.{js,jsx,ts,tsx,json,md,mdx}": "yarn format"
   }
 }
