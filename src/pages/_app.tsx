@@ -1,6 +1,7 @@
 import { DefaultLayout } from '@/components/default';
 import { DocsLayout } from '@/components/docs';
 import { HomeLayout } from '@/components/home';
+import { useAnalytics } from '@/lib/analytics';
 import { AppProvider } from '@/providers/app';
 import { EmotionCache } from '@emotion/react';
 import type { AppProps } from 'next/app';
@@ -12,6 +13,7 @@ type Props = AppProps & {
 };
 
 function MyApp({ Component, emotionCache, pageProps }: Props) {
+  useAnalytics();
   const router = useRouter();
 
   const isHome = router.pathname === '/';
