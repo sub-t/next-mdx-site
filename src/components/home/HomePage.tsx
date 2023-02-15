@@ -80,9 +80,7 @@ export const HomePage = ({
             <br />
             チュートリアル形式の解説も掲載しております。
           </Typography>
-          <LinkButton href="/docs/tutorial/getting-started">
-            Get Started
-          </LinkButton>
+          <LinkButton href="/docs/overview">Get Started</LinkButton>
         </Stack>
       </Box>
     </>
