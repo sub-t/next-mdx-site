@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { gtagUrl, renderSnippet } from '@/lib/analytics';
 import createEmotionCache from '@/lib/createEmotionCache';
 import { theme } from '@/styles/theme';
 import createEmotionServer from '@emotion/server/create-instance';
@@ -20,8 +19,6 @@ export default class MyDocument extends Document {
             href="https://fonts.googleapis.com/icon?family=Material+Icons"
           />
           {(this.props as any).emotionStyleTags}
-          <script async src={gtagUrl} />
-          <script dangerouslySetInnerHTML={{ __html: renderSnippet() }} />
         </Head>
         <body>
           <Main />
