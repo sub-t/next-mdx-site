@@ -223,9 +223,9 @@ export const getAllPaths = (basePath: string) => {
 このとき、`path`には`/blog/posts/xxx.tsx`が格納されています。
 `path`は本来`pages`以下のフォルダ構造(=ルート構造)をもとに生成されるべきですが、
 このプロジェクトでは`pages`以下のフォルダ構造に対応した`data`フォルダから生成しています。
-`getAllFrontmatters`の使用する際の`path`の生成が容易であるためこうした実装を採用しましたが、
-`data`フォルダの構造が`pages`フォルダの構造と一致していないと正しい`path`が生成できず、
-ページ内リンクの挙動が意図したものにならないといったバグを生むことになる点に注意してください。
+`getAllFrontmatters`の使用する際の`path`の生成が容易であるため、こうした実装を採用しましたが、
+`data`フォルダの構造が`pages`フォルダの構造と一致していないと正しい`path`が生成できません。
+ページ内リンクが正しく張れないといったバグを生むことになるので注意してください。
 
 #### 実装パターン 1
 
@@ -317,7 +317,7 @@ MDX で使用するコンポーネントは
 [next-mdx-remote のドキュメント](https://github.com/hashicorp/next-mdx-remote)
 を参照してください。
 
-## MDX を直接使用する。
+## MDX を直接使用する
 
 [Using MDX with Next.js](https://nextjs.org/docs/advanced-features/using-mdx)
 の設定を行っているので、直接 MDX ファイルを`pages`配下に置くことも可能です。
