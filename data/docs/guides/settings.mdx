@@ -293,8 +293,8 @@ const BASE_PATH = 'blog/posts';
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const frontmatters = getAllFrontmatters(BASE_PATH);
-  const tags = Array.from(
-    new Set(frontmatters.flatMap((frontmatter) => frontmatter.tags)),
+  const tags = distinct(
+    frontmatters.flatMap((frontmatter) => frontmatter.tags),
   );
 
   return {

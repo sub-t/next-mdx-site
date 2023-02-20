@@ -1,6 +1,7 @@
 import { DefaultPage } from '@/components/default';
 import { PostTag } from '@/components/PostTag';
 import { getAllFrontmatters } from '@/lib/mdx';
+import { distinct } from '@/utils/distinct';
 import { Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { GetStaticProps } from 'next';
@@ -28,8 +29,8 @@ const BASE_PATH = 'blog/posts';
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const frontmatters = getAllFrontmatters(BASE_PATH);
-  const tags = Array.from(
-    new Set(frontmatters.flatMap((frontmatter) => frontmatter.tags)),
+  const tags = distinct(
+    frontmatters.flatMap((frontmatter) => frontmatter.tags),
   );
 
   return {

@@ -2,6 +2,7 @@ import { DefaultPage } from '@/components/default';
 import { PostCard } from '@/components/PostCard';
 import { getAllFrontmatters } from '@/lib/mdx';
 import { FrontmatterWithPath } from '@/types/fromtmatter';
+import { distinct } from '@/utils/distinct';
 import { Stack, Typography } from '@mui/material';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { NextParsedUrlQuery } from 'next/dist/server/request-meta';
@@ -47,8 +48,8 @@ type Params = NextParsedUrlQuery & {
 
 export const getStaticPaths: GetStaticPaths<Params> = async () => {
   const frontmatters = getAllFrontmatters(BASE_PATH);
-  const tags = Array.from(
-    new Set(frontmatters.flatMap((frontmatter) => frontmatter.tags)),
+  const tags = distinct(
+    frontmatters.flatMap((frontmatter) => frontmatter.tags),
   );
 
   return {

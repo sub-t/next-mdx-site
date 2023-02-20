@@ -3,6 +3,7 @@ import { PostCard } from '@/components/PostCard';
 import { PostTag } from '@/components/PostTag';
 import { getAllFrontmatters } from '@/lib/mdx';
 import { FrontmatterWithPath } from '@/types/fromtmatter';
+import { distinct } from '@/utils/distinct';
 import { Pagination, Stack, Typography } from '@mui/material';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/dist/client/router';
@@ -122,8 +123,8 @@ export const getStaticProps: GetStaticProps<Props, Params> = async ({
   const postsCount = frontmatters.length;
   const pagesCount = Math.ceil(postsCount / POSTS_PER_PAGE);
 
-  const tags = Array.from(
-    new Set(frontmatters.flatMap((frontmatter) => frontmatter.tags)),
+  const tags = distinct(
+    frontmatters.flatMap((frontmatter) => frontmatter.tags),
   );
 
   return {
