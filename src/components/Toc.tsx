@@ -14,14 +14,14 @@ export const Toc = () => {
   const [headings, setHeadings] = React.useState<Heading[]>([]);
 
   React.useEffect(() => {
-    const elements: Heading[] = Array.from<HTMLHeadingElement>(
+    const headings: Heading[] = Array.from<HTMLHeadingElement>(
       document.querySelectorAll('h2, h3, h4'),
     ).map((element) => ({
       id: element.id,
       text: element.innerText,
       level: Number(element.nodeName.charAt(1)),
     }));
-    setHeadings(elements);
+    setHeadings(headings);
   }, [router.asPath]);
 
   return (
